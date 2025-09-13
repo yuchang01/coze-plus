@@ -6,6 +6,8 @@ WORKDIR /app
 # Install build dependencies for Go
 RUN apk add --no-cache git gcc libc-dev
 
+RUN go env -w GOPROXY=https://goproxy.cn,direct
+
 # Copy go.mod and go.sum first to leverage Docker cache
 COPY backend/go.mod backend/go.sum ./
 RUN go mod download
@@ -14,7 +16,7 @@ RUN go mod download
 COPY backend/ ./
 
 # Build the Go application
-RUN go build -ldflags="-s -w" -o /app/opencoze main.go
+RUN go build -p 1 -ldflags="-s -w" -o /app/opencoze main.go
 
 
 # Stage 2: Final image
